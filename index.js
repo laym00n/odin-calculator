@@ -10,13 +10,14 @@ const digits = document.querySelectorAll('.digits');
 const operators = document.querySelectorAll('.operators');
 const equal = document.getElementById('equals');
 const clear = document.getElementById('clear');
+const dot = document.getElementById('dot');
 
 // update display accordingly as per button digits 
 digits.forEach(digit => {
     digit.addEventListener('click', (event) => {
 
         // check if equals is already used for result
-        if (calculationFinished == true) {
+        if (calculationFinished === true) {
             displayValue = event.target.textContent;
             calculationFinished = false;
         }
@@ -106,6 +107,28 @@ clear.addEventListener('click', () => {
     // update the display div
     display.textContent = displayValue;
 
+});
+
+// when user inputs dot
+dot.addEventListener('click', () => {
+
+    // check if displayValue already includes decimal
+    if (displayValue.includes('.')) {
+        return;
+    }
+
+    // if user presses decimal right after result
+    if (calculationFinished === true) {
+        displayValue = '0.';
+        calculationFinished = false;
+    }
+    
+    // append decimal to the number
+    else {
+        displayValue += '.';
+    }
+
+    display.textContent = displayValue;
 })
 
 // match functions
