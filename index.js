@@ -1,8 +1,8 @@
 // variables to hold states
 let displayValue = '0';
 let firstNumber = null;
-let secondNumber = null;
 let operator = null;
+let calculationFinished = false;
 
 // get all required html elements
 const display = document.querySelector('.display-value');
@@ -15,8 +15,14 @@ const clear = document.getElementById('clear');
 digits.forEach(digit => {
     digit.addEventListener('click', (event) => {
 
+        // check if equals is already used for result
+        if (calculationFinished == true) {
+            displayValue = event.target.textContent;
+            calculationFinished = false;
+        }
+
         // if displayValue is zero update it to clicked digit
-        if (displayValue === '0') {
+        else if (displayValue === '0') {
             displayValue = event.target.textContent;
         }
 
@@ -34,6 +40,19 @@ digits.forEach(digit => {
 operators.forEach((operatorButton) => {
     operatorButton.addEventListener('click', (event) => {
 
+        // check if firstNumber and operator is not null (chaining)
+        if (firstNumber !== null && operator !== null) {
+            let secondNumber = displayValue;
+
+            // parse operands
+            firstNumber = parseFloat(firstNumber);
+            secondNumber = parseFloat(secondNumber);
+
+            // calculate result and update displayValue
+            displayValue = operate(operator, firstNumber, secondNumber).toString();
+
+        }
+
         // the user has finished typing first number
         firstNumber = displayValue;
         
@@ -49,18 +68,30 @@ operators.forEach((operatorButton) => {
 // when user inputs equal calculate result and display it
 equal.addEventListener('click', () => {
 
+    // check if user inputs "=" too early
+    if (operator == null || firstNumber == null) {
+        return;
+    }
+
     // store the secondNumber value from displayValue
-    secondNumber = displayValue;
+    let secondNumber = displayValue;
     
     // parse string values of firstNumber and secondNumber
     firstNumber = parseFloat(firstNumber);
     secondNumber = parseFloat(secondNumber);
 
     // calculate and return result
-    displayValue = operate(operator, firstNumber, secondNumber);
+    displayValue = operate(operator, firstNumber, secondNumber).toString();
 
     // update display div
     display.textContent = displayValue;
+
+    // equals is the last action
+    calculationFinished = true;
+
+    // reset firstNumber and operator
+    firstNumber = null;
+    operator = null;
     
 });
 
@@ -69,7 +100,6 @@ clear.addEventListener('click', () => {
 
     // reset all the variables
     firstNumber = null;
-    secondNumber = null;
     displayValue = '0';
     operator = null;
 
