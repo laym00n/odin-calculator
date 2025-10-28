@@ -11,6 +11,7 @@ const operators = document.querySelectorAll('.operators');
 const equal = document.getElementById('equals');
 const clear = document.getElementById('clear');
 const dot = document.getElementById('dot');
+const backspace = document.getElementById('backspace');
 
 // update display accordingly as per button digits 
 digits.forEach(digit => {
@@ -122,14 +123,36 @@ dot.addEventListener('click', () => {
         displayValue = '0.';
         calculationFinished = false;
     }
-    
     // append decimal to the number
     else {
         displayValue += '.';
     }
 
     display.textContent = displayValue;
-})
+});
+
+// when user inputs backspace
+backspace.addEventListener('click', () {
+
+    // check if displayValue is already '0' then do nothing
+    if (displayValue === '0') {
+        return;
+    }
+
+    // pressing backspace means any finished state is now over
+    calculationFinished = false;
+
+    // check if it's a single digit or 'Infinity'
+    if (displayValue.length === 1 || displayValue === 'Infinity') {
+        displayValue = '0';
+    }
+    // remove the last character from displayValue
+    else {
+        displayValue = displayValue.slice(0, -1);
+    }
+    
+    display.textContent = displayValue
+});
 
 // match functions
 function add (num1, num2) {
