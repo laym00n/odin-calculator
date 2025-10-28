@@ -4,6 +4,34 @@ let firstNumber = null;
 let operator = null;
 let calculationFinished = false;
 
+// match functions
+function add (num1, num2) {
+    return num1 + num2;
+}
+
+function sub (num1, num2) {
+    return num1 - num2;
+}
+
+function mul (num1, num2) {
+    return num1 * num2;
+}
+
+function div (num1, num2) {
+    if (num2 === 0) return "Infinity";
+    return num1 / num2;
+}
+
+// use math functions to return results as per the operator
+function operate (operator, num1, num2) {
+    switch (operator) {
+        case '+' : return add (num1, num2);
+        case '-' : return sub (num1, num2);
+        case '*' : return mul (num1, num2);
+        case '/' : return div (num1, num2);
+    }
+}
+
 // get all required html elements
 const display = document.querySelector('.display-value');
 const digits = document.querySelectorAll('.digits');
@@ -132,7 +160,7 @@ dot.addEventListener('click', () => {
 });
 
 // when user inputs backspace
-backspace.addEventListener('click', () {
+backspace.addEventListener('click', () => {
 
     // check if displayValue is already '0' then do nothing
     if (displayValue === '0') {
@@ -151,33 +179,45 @@ backspace.addEventListener('click', () {
         displayValue = displayValue.slice(0, -1);
     }
     
-    display.textContent = displayValue
+    display.textContent = displayValue;
 });
 
-// match functions
-function add (num1, num2) {
-    return num1 + num2;
-}
+// keyboard support
+window.addEventListener('keydown', (event) => {
 
-function sub (num1, num2) {
-    return num1 - num2;
-}
-
-function mul (num1, num2) {
-    return num1 * num2;
-}
-
-function div (num1, num2) {
-    if (num2 === 0) return "Infinity";
-    return num1 / num2;
-}
-
-// use math functions to return results as per the operator
-function operate (operator, num1, num2) {
-    switch (operator) {
-        case '+' : return add (num1, num2);
-        case '-' : return sub (num1, num2);
-        case '*' : return mul (num1, num2);
-        case '/' : return div (num1, num2);
+    // handle dot
+    if (event.key === '.') {
+        dot.click();
     }
-}
+    // handle backspace
+    else if (event.key === 'Backspace') {
+        backspace.click();
+    }
+    // handle clear
+    else if (event.key === 'Escape') {
+        clear.click();
+    }
+    // handle equals
+    else if (event.key === '=' || event.key === 'Enter') {
+        event.preventDefault();
+        equal.click();
+    }
+
+    // handle digits
+    else if (event.key >= 0 && event.key <= 9) {
+        digits.forEach(digit => {
+            if (digit.textContent === event.key) {
+                digit.click();
+            }
+        });
+    }
+
+    // handle operator
+    else if (['+', '-', '*', '/'].includes(event.key)) {
+        operators.forEach(operatorButton => {
+            if (operatorButton.textContent === event.key) {
+                operatorButton.click();
+            }
+        });
+    }
+});
